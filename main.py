@@ -1,0 +1,13 @@
+from dotenv import load_dotenv
+load_dotenv()
+from fastapi import FastAPI
+from app.routes.api import router
+
+
+app = FastAPI()
+
+app.include_router(router)
+
+@app.get("/")
+def root():
+    return {"message": "Running 🚀"}
