@@ -1,6 +1,7 @@
 from pinecone import Pinecone, ServerlessSpec
+import os
 
-pc = Pinecone()
+pc = Pinecone(api_key=os.environ.get("PINECONE_API_KEY"))
 if "youtube-rag" not in pc.list_indexes().names():
     pc.create_index(
         name="youtube-rag",

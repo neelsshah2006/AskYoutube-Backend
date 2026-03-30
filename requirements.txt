@@ -7,10 +7,11 @@ langchain-mistralai
 mistralai
 
 langchain-pinecone
+pinecone
 
 youtube-transcript-api
 
 python-dotenv
 fastapi 
 uvicorn
-pymongo[srv]
+pymongo

@@ -20,7 +20,7 @@ def process_query(url: list[str], question: str):
         if v:
             video_ids.append(v)
     try:
-        r = vector_store.as_retriever(search_kwargs={"k": 8, "filter": {"video_id": {"$in": video_ids}}})
+        r = vector_store.as_retriever(search_type = 'mmr', search_kwargs={"k": 10, "lambda_mult": 0.5, "filter": {"video_id": {"$in": video_ids}}})
         retriever = MultiQueryRetriever.from_llm(retriever=r, llm=llm, include_original=True)
         parallel = RunnableParallel({
             "context": retriever | RunnableLambda(format_docs),
@@ -40,11 +40,12 @@ def loadURL(url: str):
         return "Transcripts Available" if vid['processable'] else "No Captions Available for this video"
     try: 
         transcripts = loader.fetch(video_id=video_id, languages=['en', 'hi', 'gu'])
-        transcript = "".join([x.text for x in transcripts])
+        transcript = " ".join([x.text for x in transcripts])
         texts = text_splitter.split_text(transcript)
         docs = [Document(page_content=t, metadata={"video_id": video_id}) for t in texts]
-        ids = [f"{video_id}_{i}" for i in range(len(docs))]
-        vector_store.add_documents(documents=docs, ids=ids)
+        # ids = [f"{video_id}_{i}" for i in range(len(docs))]
+        id=vector_store.add_documents(documents=docs)
+        print("Inserted into Pinecone")
         collection.insert_one({
             "video_id": video_id,
             "processable": True

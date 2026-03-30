@@ -1,5 +1,8 @@
 from dotenv import load_dotenv
 load_dotenv()
+import os
+while(os.environ.get("PINECONE_API_KEY") == ''):
+    continue
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.routes.api import router
